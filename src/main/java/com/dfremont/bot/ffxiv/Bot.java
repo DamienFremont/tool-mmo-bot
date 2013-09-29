@@ -9,34 +9,16 @@ import com.sun.jna.platform.win32.WinDef.HWND;
 
 public class Bot {
 
-	private static final long COMBO_COOLDOWN = 2700L;
+	private static final int COMBO_COOLDOWN = 2700;
 
 	Robot robot;
-
-	private Thread effectTask = new Thread(new Runnable() {
-		@Override
-		public void run() {
-			while (true) {
-				cast();
-			}
-		}
-	});
-	private Thread killTask = new Thread(new Runnable() {
-		@Override
-		public void run() {
-			while (true) {
-				searchAndLock();
-				kill();
-			}
-		}
-	});
 
 	public Bot() throws AWTException {
 		robot = new Robot();
 	}
 
 	public void farm() {
-		initRobot();
+		focusOnWindow();
 		effectTask.start();
 		killTask.start();
 		while (true) {
@@ -44,13 +26,7 @@ public class Bot {
 		}
 	}
 
-	private void cast() {
-		System.out.println("cast blood");
-		robotKey(KeyEvent.VK_5);
-		robotSleep(90000L);
-	}
-
-	private void initRobot() {
+	private void focusOnWindow() {
 		HWND hwnd = User32.INSTANCE.FindWindow(null,
 				"FINAL FANTASY XIV: A Realm Reborn");
 		if (hwnd == null) {
@@ -61,60 +37,79 @@ public class Bot {
 		}
 	}
 
-	private void robotSleep(long timeInMs) {
+	private Thread effectTask = new Thread(new Runnable() {
+		@Override
+		public void run() {
+			while (true) {
+				castEffects();
+			}
+		}
+	});
+	private Thread killTask = new Thread(new Runnable() {
+		@Override
+		public void run() {
+			while (true) {
+				searchAndLock();
+				attack();
+			}
+		}
+	});
+
+	private void castEffects() {
+		System.out.println("cast blood");
+		robotKey(KeyEvent.VK_5);
 		try {
-			Thread.sleep(timeInMs);
+			Thread.sleep(90000L);
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	private void robotKey(int k, long time) {
+	void searchAndLock() {
+		System.out.println("lock target");
+		robot.delay(2000);
+		robotKey(KeyEvent.VK_TAB, 500);
+	}
+
+	void attack() {
+		System.out.println("attack target!");
+		comboFracture();
+		comboHeavySwingSkullSunder();
+		comboHeavySwingMaim();
+		comboHeavySwingSkullSunder();
+		comboHeavySwingMaim();
+	}
+
+	private void robotKey(int k, int time) {
 		robot.keyPress(k);
-		robotSleep(time);
+		robot.delay(time);
 		robot.keyRelease(k);
 	}
 
 	private void robotKey(int k) {
 		robot.keyPress(k);
-		robotSleep(10);
 		robot.keyRelease(k);
 	}
 
-	void searchAndLock() {
-		System.out.println("lock");
-		robotSleep(2000);
-		robotKey(KeyEvent.VK_TAB, 500L);
-
-	}
-
-	void kill() {
-		System.out.println("attack!");
-		doWeak();
-		doCombo1();
-		doCombo2();
-		doCombo1();
-		doCombo2();
-	}
-
-	private void doWeak() {
+	private void comboFracture() {
+		System.out.println("combo Fracture");
 		robotKey(KeyEvent.VK_4);
-		robotSleep(4000L);
+		robot.delay(4000);
 	}
 
-	void doCombo1() {
-		System.out.println("attack 1 then 3");
+	void comboHeavySwingSkullSunder() {
+		System.out.println("combo HeavySwing then SkullSunder");
 		robotKey(KeyEvent.VK_1);
-		robotSleep(COMBO_COOLDOWN);
+		robot.delay(COMBO_COOLDOWN);
 		robotKey(KeyEvent.VK_3);
-		robotSleep(COMBO_COOLDOWN);
+		robot.delay(COMBO_COOLDOWN);
 	}
 
-	void doCombo2() {
-		System.out.println("attack 1 then 8");
+	void comboHeavySwingMaim() {
+		System.out.println("combo HeavySwing then Maim");
 		robotKey(KeyEvent.VK_1);
-		robotSleep(COMBO_COOLDOWN);
+		robot.delay(COMBO_COOLDOWN);
 		robotKey(KeyEvent.VK_8);
-		robotSleep(COMBO_COOLDOWN);
+		robot.delay(COMBO_COOLDOWN);
 	}
 }
