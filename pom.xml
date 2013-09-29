@@ -11,17 +11,20 @@
 		<jsf.version>2.1.7</jsf.version>
 	</properties>
 	<dependencies>
+	
 		<dependency>
-			<groupId>com.googlecode.javacv</groupId>
-			<artifactId>javacv</artifactId>
-			<version>0.5</version>
+			<groupId>net.java.dev.jna</groupId>
+			<artifactId>platform</artifactId>
+			<version>3.5.2</version>
 		</dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>[4.11,)</version>
 			<scope>test</scope>
 		</dependency>
+
 	</dependencies>
 	<build>
 		<plugins>
