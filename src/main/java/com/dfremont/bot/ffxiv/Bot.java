@@ -19,9 +19,7 @@ public class Bot {
 
 	public void farm() {
 		focusOnWindow();
-		// moveTask.start();
-		// while (moveTask.isAlive())
-		// ;
+		// TODO tp and move
 		effectTask.start();
 		killTask.start();
 		while (true)
@@ -38,20 +36,6 @@ public class Bot {
 			User32.INSTANCE.SetForegroundWindow(hwnd);
 		}
 	}
-
-	private Thread moveTask = new Thread(new Runnable() {
-		@Override
-		public void run() {
-			turnLeft(90);
-			// forward();
-		}
-
-		private void turnLeft(int d) {
-			robot.keyPress(KeyEvent.VK_Q);
-			robot.delay(d * 8);
-			robot.keyRelease(KeyEvent.VK_Q);
-		}
-	});
 
 	private Thread effectTask = new Thread(new Runnable() {
 		@Override
